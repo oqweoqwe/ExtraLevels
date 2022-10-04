@@ -3,15 +3,19 @@ package me.oqwe.extralevels.util;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+
 public class ChatUtil {
 
 	private static final String[] help = {
 			"&eExtraLevels &7help:",
 			"&7- &e/el reload",
-			"&7Reloads the configuration of the plugin",
+			"  &7Reloads the configuration of the plugin",
 			"&7- &e/el summon &6<entity> <level>",
-			"&7Summons an entity with specified level at your position (for testing purposes)",
-			"&7For a guide on how to configure levels please see the spigot page for this plugin"
+			"  &7Summons an entity with specified level at your position (for testing purposes)"
 	};
 	
 	/**
@@ -55,6 +59,14 @@ public class ChatUtil {
 	public static void help(CommandSender sender) {
 		for (var msg : help) 
 			sender.sendMessage(cc(msg));
+		
+		TextComponent text = new TextComponent(cc("&7For a guide on how to configure levels please see the spigot page for this plugin &e(click this message)"));
+		text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/extralevels.105625/"));
+		text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+				new Text(cc("&eClick to visit the plugins spigot page"))));
+		sender.spigot().sendMessage(text);
 	}
+	
+	
 	
 }
