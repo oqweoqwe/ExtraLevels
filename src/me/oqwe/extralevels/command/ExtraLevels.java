@@ -22,7 +22,10 @@ public class ExtraLevels implements CommandExecutor {
 			// switch over subcommand argument and run a subcommand
 			switch(args[0]) {
 			case "help":
-				ChatUtil.help(sender);
+				if (sender.hasPermission("extralevels.help")) {
+					ChatUtil.help(sender);
+				} else
+					ChatUtil.nopermisison(sender);
 				break;
 			case "reload":
 				if (sender.hasPermission("extralevels.reload")) {
