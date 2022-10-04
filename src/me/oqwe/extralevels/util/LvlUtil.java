@@ -109,8 +109,11 @@ public class LvlUtil {
 
 			}
 			
+			if (chance == 0) {
+				Bukkit.getLogger().warning("Failed to load level " + level + " since the chance is 0");
+				continue;
+			}
 			levels.add(new Lvl(lvl, chance, nameColor, attributeModifiers));
-			System.out.println("loaded " + level + " with lvl " + lvl + " chance " + chance + " namecolor " + nameColor + " attributeModifiers " + attributeModifiers);
 
 		}
 

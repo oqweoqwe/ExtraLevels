@@ -13,12 +13,10 @@ import me.oqwe.extralevels.util.Lvl;
 import me.oqwe.extralevels.util.LvlFile;
 import me.oqwe.extralevels.util.LvlUtil;
 
-// remind users to disable log named deaths in spigot.yml
 // specific handling of bosses, eg. disable levelling (or set to constant lvl) or allow them to be insane
 // special loot tables for levels
 // lvl can either modify an attribute or set it to a flat value
-// lvl must have chance in levels.yml
-// add click event to help msg redirecting to spigot page
+// expand config
 
 public class Main extends JavaPlugin {
 
@@ -34,6 +32,8 @@ public class Main extends JavaPlugin {
 			getDataFolder().mkdirs();
 		}
 		
+		saveDefaultConfig();
+		
 		instance = this;
 		new LvlFile();
 		
@@ -46,10 +46,10 @@ public class Main extends JavaPlugin {
 	}
 	
 	public void reload() {
-		// reload config stuffs
+		reloadConfig();
 		lvls = LvlUtil.loadLevels();
 		chanceMap = LvlUtil.generateChanceMap();
-		
+		// TODO load config values into memory in config class
 	}
 	
 	private void registerListeners() {
