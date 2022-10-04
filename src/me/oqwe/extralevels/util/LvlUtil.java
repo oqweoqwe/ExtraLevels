@@ -31,6 +31,7 @@ public class LvlUtil {
 			chanceTotal += Main.getChanceMap().get(lvlObj);
 
 		// select random and define accumulated chance
+		System.out.println(chanceTotal);
 		double choice = random.nextDouble(chanceTotal), accumulatedChance = 0;
 
 		// iterate over levels, accumulate chances and check if acc chance has excedded
@@ -85,28 +86,32 @@ public class LvlUtil {
 			
 			// iterate over elements under each level
 			for (var element : config.getKeys(true)) {
+				if (element.contains(".")) {
+					
+					if (element.substring(0, element.indexOf('.')).equalsIgnoreCase(level.toString())) {
+						// this element belongs to level, parse it and construct the level
+						if (element.contains("chance")) {
+							chance = config.getDouble(element);
+						}
+						else if (element.contains("namecolor"))
+							nameColor = config.getString(element);
+						else {
+							
+							// element is an attribute modifier
+							var attrib = AttributeHandler.translateAttribute(element.substring(element.indexOf('.') + 1));
+							var mod = AttributeHandler.getAttributeModifier(attrib, config.getString(element));
+							
+							attributeModifiers.add(mod);
 
-				if (element.startsWith(level) && element.contains(".")) {
-
-					// this element belongs to level, parse it and construct the level
-					if (element.contains("chance"))
-						chance = config.getDouble(element);
-					else if (element.contains("namecolor"))
-						nameColor = config.getString(element);
-					else {
-						
-						// element is an attribute modifier
-						var attrib = AttributeHandler.translateAttribute(element.substring(element.indexOf('.') + 1));
-						var mod = AttributeHandler.getAttributeModifier(attrib, config.getString(element));
-						
-						attributeModifiers.add(mod);
-
+						}
 					}
+					
 				}
 
 			}
 			
 			levels.add(new Lvl(lvl, chance, nameColor, attributeModifiers));
+			System.out.println("loaded " + level + " with lvl " + lvl + " chance " + chance + " namecolor " + nameColor + " attributeModifiers " + attributeModifiers);
 
 		}
 

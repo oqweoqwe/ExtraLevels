@@ -17,6 +17,7 @@ import me.oqwe.extralevels.util.LvlUtil;
 // specific handling of bosses, eg. disable levelling (or set to constant lvl) or allow them to be insane
 // special loot tables for levels
 // lvl can either modify an attribute or set it to a flat value
+// lvl must have chance in levels.yml
 
 public class Main extends JavaPlugin {
 
