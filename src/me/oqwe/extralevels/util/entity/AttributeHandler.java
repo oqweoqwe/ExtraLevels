@@ -36,8 +36,10 @@ public class AttributeHandler {
 		Lvl lvlObj = LvlUtil.getLvlObject(entity);
 
 		for (var modifier : lvlObj.getModifiers()) {
-
-			attributable.getAttribute(getAttribute(modifier)).addModifier(modifier);
+			
+			if (!(attributable.getAttribute(getAttribute(modifier)) == null)) {
+				attributable.getAttribute(getAttribute(modifier)).addModifier(modifier);
+			}
 
 			// if health mod, heal to max
 			EntityUtil.healToMax(entity);
@@ -113,7 +115,7 @@ public class AttributeHandler {
 				operation = AttributeModifier.Operation.ADD_NUMBER;
 				modifier = Double.parseDouble("-" + value.substring(1));
 				break;
-			case '*': // TODO test for correct modifier
+			case '*':
 				operation = AttributeModifier.Operation.MULTIPLY_SCALAR_1;
 				modifier = Double.parseDouble(value.substring(1)) - 1; // remove 1 to counteract the added 1 from the
 																		// multiply_scalar_1 operation
