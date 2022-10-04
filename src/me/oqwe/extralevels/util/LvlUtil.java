@@ -31,7 +31,6 @@ public class LvlUtil {
 			chanceTotal += Main.getChanceMap().get(lvlObj);
 
 		// select random and define accumulated chance
-		System.out.println(chanceTotal);
 		double choice = random.nextDouble(chanceTotal), accumulatedChance = 0;
 
 		// iterate over levels, accumulate chances and check if acc chance has excedded

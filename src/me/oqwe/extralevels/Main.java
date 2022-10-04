@@ -18,6 +18,7 @@ import me.oqwe.extralevels.util.LvlUtil;
 // special loot tables for levels
 // lvl can either modify an attribute or set it to a flat value
 // lvl must have chance in levels.yml
+// add click event to help msg redirecting to spigot page
 
 public class Main extends JavaPlugin {
 

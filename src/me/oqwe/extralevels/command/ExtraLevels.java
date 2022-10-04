@@ -1,15 +1,14 @@
 package me.oqwe.extralevels.command;
 
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.oqwe.extralevels.Main;
 import me.oqwe.extralevels.command.sub.Summon;
+import me.oqwe.extralevels.util.ChatUtil;
 
 public class ExtraLevels implements CommandExecutor {
 
@@ -22,38 +21,42 @@ public class ExtraLevels implements CommandExecutor {
 			
 			// switch over subcommand argument and run a subcommand
 			switch(args[0]) {
-			
+			case "help":
+				ChatUtil.help(sender);
+				break;
 			case "reload":
-				Main.getInstance().reload();
-				sender.sendMessage("reloaded");
+				if (sender.hasPermission("extralevels.reload")) {
+					Main.getInstance().reload();
+					ChatUtil.reloaded(sender);
+				} else
+					ChatUtil.nopermisison(sender);	
 				break;
 				
-			case "kill":
+			case "kill": // command used for testing, only works for me
+				if (!(sender.getName().equalsIgnoreCase("oqwe"))) {
+					ChatUtil.unknowncommand(sender);
+					break;
+				}
 				for (var entity : Bukkit.getPlayer("oqwe").getWorld().getEntities()) {
 					if (!(entity instanceof Player)) {
 						entity.remove();
 					}
 				}
-				break;
-			case "mod":
-				for (var entity : Bukkit.getPlayer("oqwe").getWorld().getEntities())
-					if (!(entity instanceof Player) && entity instanceof LivingEntity) {
-						LivingEntity e = (LivingEntity) entity;
-						System.out.println(e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-					}
-				break;
-						
+				break;			
 			
 			case "summon":
 				Summon.run(sender, args);
 				break;
-			
+				
+			default:
+				ChatUtil.unknowncommand(sender);
+				break;
 			}
 			
 			return true;
 			
 		}
-		sender.sendMessage("bro, args!"); // TODO format
+		ChatUtil.unknowncommand(sender);
 		return true;
 	}
 	
