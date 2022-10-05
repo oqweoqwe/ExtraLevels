@@ -1,2 +1,17 @@
 # Config for ExtraLevels by oqwe
 # This will be expanded with more options as the plugin continues development
+
+# should the plugin display names of mobs above their head
+show-custom-name: true
+
+# should the plugin display the level of mobs in their name
+show-level: true
+
+# should the plugin process mobs that are spawned by another plugin
+process-plugin-spawns: true
+
+# should the plugin process mobs that are spawned by a /summon command
+process-command-spawns: true
+
+# should the plugin apply levels to friendly mobs (chickens, cows, dolphins etc.)
+process-friendlies: true

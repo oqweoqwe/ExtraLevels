@@ -2,6 +2,7 @@ package me.oqwe.extralevels.util.entity;
 
 import org.bukkit.entity.Entity;
 
+import me.oqwe.extralevels.config.Config;
 import me.oqwe.extralevels.persistentdata.PersistentDataHandler;
 import me.oqwe.extralevels.util.ChatUtil;
 import me.oqwe.extralevels.util.LvlUtil;
@@ -15,10 +16,22 @@ public class NameHandler {
 	 * @param entity
 	 */
 	public static void setupCustomName(Entity entity) {
+		// check config
+		if (!Config.SHOW_CUSTOM_NAME)
+			return;
+		
 		if (PersistentDataHandler.hasLvl(entity)) {
-			entity.setCustomName(ChatUtil.cc("&7Lvl " + PersistentDataHandler.getLvl(entity)
-					+ LvlUtil.getLvlObject(entity).getNameColor() + " " + entity.getName()));
+			
+			String customName = "";
+			
+			if (Config.SHOW_LEVEL)
+				customName += "&7Lvl " + PersistentDataHandler.getLvl(entity) + " ";
+			
+			customName += LvlUtil.getLvlObject(entity).getNameColor() + entity.getName();
+			
+			entity.setCustomName(ChatUtil.cc(customName));
 			entity.setCustomNameVisible(true);
+			
 		}
 	}
 

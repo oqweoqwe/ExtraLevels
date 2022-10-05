@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.oqwe.extralevels.command.ExtraLevels;
+import me.oqwe.extralevels.config.Config;
 import me.oqwe.extralevels.listener.CreatureSpawnListener;
 import me.oqwe.extralevels.listener.WorldLoadListener;
 import me.oqwe.extralevels.util.Lvl;
@@ -17,6 +18,9 @@ import me.oqwe.extralevels.util.LvlUtil;
 // special loot tables for levels
 // lvl can either modify an attribute or set it to a flat value
 // expand config
+// avoid negative level values
+// specific handling of infection and curing of villagers (look at spawnreason)
+// look through spawnreasons for things that should be handled specifically
 
 public class Main extends JavaPlugin {
 
@@ -33,6 +37,7 @@ public class Main extends JavaPlugin {
 		}
 		
 		saveDefaultConfig();
+		Config.load(getConfig());
 		
 		instance = this;
 		new LvlFile();
@@ -47,9 +52,9 @@ public class Main extends JavaPlugin {
 	
 	public void reload() {
 		reloadConfig();
+		Config.load(getConfig());
 		lvls = LvlUtil.loadLevels();
-		chanceMap = LvlUtil.generateChanceMap();
-		// TODO load config values into memory in config class
+		chanceMap = LvlUtil.generateChanceMap();		
 	}
 	
 	private void registerListeners() {
