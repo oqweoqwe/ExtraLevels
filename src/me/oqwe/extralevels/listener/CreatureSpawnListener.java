@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import me.oqwe.extralevels.config.Config;
+import me.oqwe.extralevels.util.LvlUtil;
 import me.oqwe.extralevels.util.entity.EntityUtil;
 
 public class CreatureSpawnListener implements Listener {
@@ -27,31 +28,87 @@ public class CreatureSpawnListener implements Listener {
 	@EventHandler
 	public void onEvent(CreatureSpawnEvent e) {
 
+		// ignore players
 		if (e.getEntity() instanceof Player)
 			return;
 
+		// HANDLE SPAWN REASON
+		// command
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.COMMAND)) {
+			if (Config.PROCESS_COMMAND_SPAWNS) {
+				EntityUtil.processEntity(e.getEntity(), true);
+				return;
+			} else
+				return;
+		}
+
+		// plugin
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+			if (Config.PROCESS_PLUGIN_SPAWNS) {
+				EntityUtil.processEntity(e.getEntity(), true);
+				return;
+			} else
+				return;
+		}
+
+		// cured
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CURED)) {
+			// normally the level shouldn't change here, however villagers are passive and
+			// zombies are hostile
+			// so the level of the entity after curing might not be allowed
+			// TODO check if level is allowed
+			// if configured to ignore harmless, reset entity
+			if (!Config.PROCESS_HARMLESS && e.getEntity().getType().equals(EntityType.VILLAGER)) {
+				LvlUtil.removeLevel(e.getEntity());
+				return;
+			} else if (Config.PROCESS_HARMLESS && e.getEntity().getType().equals(EntityType.VILLAGER)) {
+				// if dont ignore harmless, update name and mods
+			}
+				EntityUtil.processEntity(e.getEntity(), false);
+				return;
+		}
+
+		// infected
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.INFECTION)) {
+			// normally the level shouldn't change here, however villagers are passive and
+			// zombies are hostile
+			// so the level of the entity after infection might not be allowed
+			// TODO check if level is allowed
+			return;
+		}
+
+		// metamorphosis
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.METAMORPHOSIS)) {
+			// level shouldn't be changed, as this isn't percieved as a new entity
+			// reprocess to update name and modifiers
+			EntityUtil.processEntity(e.getEntity(), true);
+			return;
+		}
+
+		// sheared (mooshroom to cow using shears)
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SHEARED)) {
+			// level shouldn't be changed, as this isn't percieved as a new entity
+			// reprocess to update name and modifiers
+			EntityUtil.processEntity(e.getEntity(), true);
+			return;
+		}
+
+		// shoudler_entity (when parrot on shoulder dismounts)
+		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SHOULDER_ENTITY)) {
+			// nothing should be changed, as this isn't percieved as a new entity
+			return;
+		}
+
+		// ignore if entity is harmless and process-harmless is false in config
 		if (!Config.PROCESS_HARMLESS) {
 			for (var harmless : harmlessEntities)
 				if (e.getEntity().getType().equals(harmless))
 					return;
 		}
-		
-		if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.COMMAND) && Config.PROCESS_COMMAND_SPAWNS) {
-			EntityUtil.processEntity(e.getEntity());
-			return;
 
-		} else if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM) && Config.PROCESS_PLUGIN_SPAWNS) {
+		// if no spawn reason is caught
+		EntityUtil.processEntity(e.getEntity(), true);
 
-			EntityUtil.processEntity(e.getEntity());
-			return;
-
-		} else if (!(e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM))
-				&& !(e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.COMMAND))) {
-
-			EntityUtil.processEntity(e.getEntity());
-			return;
-
-		}
 	}
 
 }

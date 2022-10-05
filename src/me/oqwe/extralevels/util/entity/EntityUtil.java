@@ -16,9 +16,9 @@ public class EntityUtil {
 	 * 
 	 * @param entity
 	 */
-	public static void processEntity(Entity entity) {
+	public static void processEntity(Entity entity, boolean assignRandomLevelIfNoLevelIsFound) {
 
-		if (!PersistentDataHandler.hasLvl(entity))
+		if (!PersistentDataHandler.hasLvl(entity) && assignRandomLevelIfNoLevelIsFound)
 			LvlUtil.setRandomLvl(entity);
 
 		// ensure that name and midifiers are removed before adding to avoid appending
@@ -60,7 +60,7 @@ public class EntityUtil {
 			if (entity instanceof LivingEntity && !(entity instanceof Player)) {
 
 				if (!PersistentDataHandler.hasLvl(entity)) {
-					EntityUtil.processEntity(entity);
+					EntityUtil.processEntity(entity, true);
 				}
 			}
 		}

@@ -59,7 +59,7 @@ public class Summon {
 		Player p = (Player) sender;
 		Entity entity = p.getWorld().spawnEntity(p.getLocation(), entityType);
 		PersistentDataHandler.setLvl(entity, lvl);
-		EntityUtil.processEntity(entity);
+		EntityUtil.processEntity(entity, false);
 		if (entity.getCustomName() == null)
 			ChatUtil.summonedentity(sender, entity.getName().toString());
 		else

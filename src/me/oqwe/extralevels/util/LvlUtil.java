@@ -10,13 +10,15 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 
-import me.oqwe.extralevels.Main;
 import me.oqwe.extralevels.persistentdata.PersistentDataHandler;
 import me.oqwe.extralevels.util.entity.AttributeHandler;
+import me.oqwe.extralevels.util.entity.NameHandler;
 
 public class LvlUtil {
 
 	private static Random random = new Random();
+	private static Set<Lvl> levelSet;
+	private static HashMap<Lvl, Double> chanceMap;
 
 	/**
 	 * Selects a level to apply to the entity, and stores it in the persistent data
@@ -27,16 +29,16 @@ public class LvlUtil {
 
 		double chanceTotal = 0;
 		// count chance total
-		for (var lvlObj : Main.getChanceMap().keySet())
-			chanceTotal += Main.getChanceMap().get(lvlObj);
+		for (var lvlObj : chanceMap.keySet())
+			chanceTotal += chanceMap.get(lvlObj);
 
 		// select random and define accumulated chance
 		double choice = random.nextDouble(chanceTotal), accumulatedChance = 0;
 
 		// iterate over levels, accumulate chances and check if acc chance has excedded
 		// the random
-		for (var lvlObj : Main.getChanceMap().keySet()) {
-			accumulatedChance += Main.getChanceMap().get(lvlObj);
+		for (var lvlObj : chanceMap.keySet()) {
+			accumulatedChance += chanceMap.get(lvlObj);
 			if (choice <= accumulatedChance) {
 				PersistentDataHandler.setLvl(entity, lvlObj.getLvl());
 				break;
@@ -45,13 +47,24 @@ public class LvlUtil {
 	}
 
 	/**
+	 * Removes the level from persistent data and removes all modifiers and custom name
+	 * 
+	 * @param entity
+	 */
+	public static void removeLevel(Entity entity) {
+		PersistentDataHandler.removeLvl(entity);
+		AttributeHandler.removeModifiers(entity);
+		NameHandler.removeCustomName(entity);
+	}
+	
+	/**
 	 * Gets the level object corresponding to an entities level
 	 * 
 	 * @param entity
 	 * @return Lvl object
 	 */
 	public static Lvl getLvlObject(Entity entity) {
-		for (var lvlObj : Main.getLvls()) {
+		for (var lvlObj : levelSet) {
 			if (lvlObj.getLvl() == PersistentDataHandler.getLvl(entity))
 				return lvlObj;
 		}
@@ -59,13 +72,15 @@ public class LvlUtil {
 	}
 
 	/**
-	 * Loads the levels from levels.yml
+	 * Loads the levels from levels.yml and resets old level set, also generates chance map
 	 * 
 	 * @return Set of level objects
 	 */
-	public static Set<Lvl> loadLevels() {
-		Set<Lvl> levels = new HashSet<>();
+	public static void loadLevels() {
 
+		// reset levelSet
+		levelSet = new HashSet<Lvl>();
+		
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(LvlFile.getInstance().getFile());
 
 		// first iterate over levels, ie top level of file
@@ -113,24 +128,12 @@ public class LvlUtil {
 				Bukkit.getLogger().warning("Failed to load level " + level + " since the chance is 0");
 				continue;
 			}
-			levels.add(new Lvl(lvl, chance, nameColor, attributeModifiers));
+			levelSet.add(new Lvl(lvl, chance, nameColor, attributeModifiers));
 
 		}
-
-		return levels;
-	}
-
-	/**
-	 * Generates a map of level objects with the values being their chances
-	 * 
-	 * @return Map of level objects and their chances
-	 */
-	public static HashMap<Lvl, Double> generateChanceMap() {
-		HashMap<Lvl, Double> chanceMap = new HashMap<>();
-
-		Main.getLvls().forEach(lvl -> chanceMap.put(lvl, lvl.getChance()));
-
-		return chanceMap;
+		// generate chance map
+		chanceMap = new HashMap<Lvl, Double>();
+		levelSet.forEach(lvl -> chanceMap.put(lvl, lvl.getChance()));
 	}
 
 }

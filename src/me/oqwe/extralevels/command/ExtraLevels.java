@@ -21,6 +21,7 @@ public class ExtraLevels implements CommandExecutor {
 			
 			// switch over subcommand argument and run a subcommand
 			switch(args[0]) {
+				
 			case "help":
 				if (sender.hasPermission("extralevels.help")) {
 					ChatUtil.help(sender);

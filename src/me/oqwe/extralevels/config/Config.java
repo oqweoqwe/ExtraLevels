@@ -10,7 +10,6 @@ public class Config {
 	
 	public static void load(FileConfiguration config) {
 		SHOW_CUSTOM_NAME = config.getBoolean("show-custom-name");
-		System.out.println(config.getBoolean("show-custom-name"));
 		SHOW_LEVEL = config.getBoolean("show-level");
 		PROCESS_PLUGIN_SPAWNS = config.getBoolean("process-plugin-spawns");
 		PROCESS_COMMAND_SPAWNS = config.getBoolean("process-command-spawns");

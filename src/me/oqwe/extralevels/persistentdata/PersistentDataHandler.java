@@ -22,4 +22,8 @@ public class PersistentDataHandler {
 		return entity.getPersistentDataContainer().get(LVLKEY, PersistentDataType.INTEGER);
 	}
 	
+	public static void removeLvl(Entity entity) {
+		entity.getPersistentDataContainer().remove(LVLKEY);
+	}
+	
 }
